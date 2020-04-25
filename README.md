@@ -8,4 +8,4 @@ Simple molfile viewer with sorting feature by Tanimoto coefficient.
 - Ext.js
 - ChemDoodle Web Component
 
-<img src="screenshot.png" width="400" alt="screenshot" />
+<img src="screenshot.png" width="600" alt="screenshot" />
