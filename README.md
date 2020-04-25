@@ -1,4 +1,4 @@
-# Web Molfile Viewer
+# Molfile Viewer
 
 Simple molfile viewer with sorting feature by Tanimoto coefficient.
 
