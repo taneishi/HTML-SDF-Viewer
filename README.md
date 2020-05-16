@@ -32,3 +32,7 @@ mkdir data
 cp drugbank.sdf data/
 python manage.py migrate
 ```
+
+## TODO
+
+- [ ] Pure Javascript
