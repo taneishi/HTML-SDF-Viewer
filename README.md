@@ -1,4 +1,4 @@
-# HSV - an HTML SDF Viewer
+# Javascript SDF Viewer
 
 This is a small web app that allows the user to examine the contents of
 a 2D or 3D SDF in a browser.  Any tagged data records are tabulated
@@ -33,24 +33,12 @@ tweaking the width of the browser window. This forces a recalculation
 of the layout and usually fixes things.  It's crude, but seems to
 work. I am trying to find out why this happens in order to fix it.
 
-Note that 3Dmol.js sends your IP address back to base using the http
-call
-```javascript
-$.get("https://3dmol.csb.pitt.edu/track/report.cgi");
-```
-to help them
-assess usage and demonstrate value to their funding agencies.  This
-can be disabled if you don't want that, by editing and recompiling the
-code.  The copy you download here is the original, with this feature
-enabled. 
-
 There are some relevant files in the TestData directory of the
 download if you want to try it on public data.
 
 Copyright David Cosgrove, CozChemIx Limited, 2017.
-
-http://cozchemix.co.uk
-
 david@cozchemix.co.uk
+
+Copyright Kei Taneishi, 2019-2021.
 
 Licensed under the BSD license - see license.txt for details.
