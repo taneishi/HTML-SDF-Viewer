@@ -28,15 +28,10 @@
     <!-- The above meta tags *must* come first in the head; any other head content must come *after* these tags -->
     
     <title>Javascript SDF Viewer</title>
-    <script type="text/javascript" language="javascript" src="./Javascript/JSME_2017-02-26/jsme/jsme.nocache.js"></script>
-
-    <script src="./Javascript/jquery.min.js"></script>
-
-    <!-- the 3Dmol.js WebGL 3D molecule viewer -->
-    <script src="./Javascript/3Dmol-nojquery.js"></script>
+    <script type="text/javascript" language="javascript" src="./js/JSME_2017-02-26/jsme/jsme.nocache.js"></script>
 
     <!-- moment.js - date processing -->
-    <script type="text/javascript" language="javascript" src="./Javascript/moment-with-locales.min.js"></script>
+    <script type="text/javascript" language="javascript" src="./js/moment-with-locales.min.js"></script>
 
     <script type="text/javascript" language="javascript" src="https://d3js.org/d3.v6.js"></script>
 
@@ -347,7 +342,8 @@
         jsmeApplet = new JSApplet.JSME("jsme_container", "100%", "100%",{"options": "hydrogens, depict"});
     }
 
-    $(document).ready(function(){
+    //$(document).ready(function(){
+    document.addEventListener("DOMContentLoaded", function(e) {
         d3.text('https://raw.githubusercontent.com/taneishi/SDFViewer/master/data/train_rand_data.sdf').then(function(text){
             parseSDF(text);
         });
