@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
     <!--
-    This page is a simple demonstration of using either JSME or 3DMol.js 
+    This page is a simple demonstration of using either JSME
     to display a multi-mol SDF and associated data.
 
     Copyright David Cogrove, CozChemIx Limited 2017
     david@cozchemix.co.uk
+
     Distributed under the BSD license, contained in the file license.txt in
     the same directory as this file.
 
@@ -13,13 +14,6 @@
     http://peter-ertl.com/jsme
     B. Bienfait and P. Ertl, JSME: a free molecule editor in JavaScript,
     J. Cheminformatics 5:24 (2013)) 
-
-    3Dmol.js :
-    http://3dmol.csb.pitt.edu
-
-    Nicholas Rego and David Koes
-    3Dmol.js: molecular visualization with WebGL
-    Bioinformatics (2015) 31 (8): 1322-1324 doi:10.1093/bioinformatics/btu829
     -->
   <head>
     
@@ -30,8 +24,8 @@
     <title>Javascript SDF Viewer</title>
     <script type="text/javascript" language="javascript" src="./js/JSME_2017-02-26/jsme/jsme.nocache.js"></script>
 
-    <!-- moment.js - date processing -->
-    <script type="text/javascript" language="javascript" src="./js/moment-with-locales.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" 
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
     <script type="text/javascript" language="javascript" src="https://d3js.org/d3.v6.js"></script>
 
@@ -50,16 +44,16 @@
 	<div>
 	  Select SDF to display : <input id="inputFile" type="file" accept=".sdf,.mol" />
 	  <div class="row">
-	    <div class="col-md-8">
+	    <div>
 	      <div id="jsme_container"></div>
 	    </div>
-	    <div class="col-md-4" ng-if="mol_tagged_data">
+	    <div>
 	      <ul>
 		    <li>{{tag}} : {{mol_tagged_data[mol_index[mol_counter]][tag]}}</li>
 	      </ul>
 	    </div>
 	  </div>
-	  <div ng-show="mol_tagged_data">
+	  <div>
 	    <div class="row">
 	      <button ng-click="firstMolCounter(10)">First</button>
 	      <button ng-click="decrementMolCounter(10)">10th Previous</button>
@@ -103,6 +97,11 @@
 	    var sdf_records = split_sdf(whole_sdf);
 	    mol_tagged_data = sdf_records.tagged_data;
 	    sdf_mols = sdf_records.mol_records;
+	    //console.log("Number of molecules " + sdf_mols.length);
+	    //console.log("Number of tagged data records " + mol_tagged_data.length);
+        for (i=0; i<all_sdf_tags.length; i++){
+            //console.log(all_sdf_tags[i]);
+        }
 	    show_molecule();
     };
 
@@ -332,8 +331,6 @@
             }
         }
 	
-	    // console.log( "Number of molecules " + mol_records.length );
-	    // console.log( "Number of tagged data records " + tagged_data.length );
 	    return { mol_records:mol_records, tagged_data:tagged_data };
     };
 
@@ -342,8 +339,7 @@
         jsmeApplet = new JSApplet.JSME("jsme_container", "100%", "100%",{"options": "hydrogens, depict"});
     }
 
-    //$(document).ready(function(){
-    document.addEventListener("DOMContentLoaded", function(e) {
+    $(document).ready(function(){
         d3.text('https://raw.githubusercontent.com/taneishi/SDFViewer/master/data/train_rand_data.sdf').then(function(text){
             parseSDF(text);
         });
@@ -351,15 +347,14 @@
 
     var inputFile = document.querySelector('#inputFile');
 
-    inputFile.addEventListener('change', function(){ 
-    var file = inputFile.files[0];
-    if (file) {
-        var url = URL.createObjectURL(file);
-        d3.text(url).then(function(text){
-            parseSDF(text);
-        });
-    }
-
+    $(inputFile).change(function(){ 
+        var file = inputFile.files[0];
+        if (file) {
+            var url = URL.createObjectURL(file);
+            d3.text(url).then(function(text){
+                parseSDF(text);
+            });
+        }
     });
 
     </script>
