@@ -7,6 +7,7 @@ var sdf_mols = [];
 var mol_counter = 0;
 var mol_index = [];
 var descending_sort = false;
+var step_size = 10;
 
 parseSDF = function($fileContent){
     var sdf_records = split_sdf($fileContent);
@@ -14,17 +15,6 @@ parseSDF = function($fileContent){
     sdf_mols = sdf_records.mol_records;
     //for (i=0; i<all_sdf_tags.length; i++){ console.log(all_sdf_tags[i]); }
 };
-
-// expects to get the Number value from the mol_tagged_data record.
-setMolCounter = function(new_val){
-    for (i = 0; i < mol_tagged_data.length; i++){
-        if (mol_tagged_data[mol_index[i]].Number == new_val){
-            mol_counter = i;
-            show_molecule();
-            return;
-        }
-    }
-}
 
 // sort the mol data according to the given value, maintaining the sense of the
 // next, previous buttons on the sorted data.
@@ -220,7 +210,7 @@ show_molecule = function(){
 
 var tabulate = function(){
     var columns = Object.keys(mol_tagged_data[0]);
-    var data = mol_tagged_data.slice(mol_counter, mol_counter+10);
+    var data = mol_tagged_data.slice(mol_counter, mol_counter+step_size);
 
     var table = d3.select('#table');
     d3.select('#table thead').remove();
@@ -280,7 +270,6 @@ $(document).ready(function(){
     });
 
     $('#next').on('click', function(){
-        var step_size = 10;
         if (mol_counter < sdf_mols.length - step_size){
             mol_counter += step_size ;
             show_molecule();
@@ -288,7 +277,6 @@ $(document).ready(function(){
     });
 
     $('#prev').on('click', function(){
-        var step_size = 10;
         if (mol_counter >= step_size){
             mol_counter -= step_size;
             show_molecule();
@@ -296,7 +284,7 @@ $(document).ready(function(){
     });
 
     $('#last').on('click', function(){
-        mol_counter = Math.floor(sdf_mols.length / 10) * 10;
+        mol_counter = Math.floor(sdf_mols.length / step_size) * step_size;
         show_molecule();
     });
 });
