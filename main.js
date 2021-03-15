@@ -1,48 +1,26 @@
-// part of code for reading local SDFs.  Borrowed heavily from
-// https://veamospues.wordpress.com/2014/01/27/reading-files-with-angularjs
-// Named as attribute value by file input tag in html, called by directive named
-// in input tag.
+// part of code for reading local SDFs.
+// Borrowed heavily from https://veamospues.wordpress.com/2014/01/27/reading-files-with-angularjs
+// Named as attribute value by file input tag in html, called by directive named in input tag.
+var all_sdf_tags = [];
+var mol_tagged_data = [];
+var sdf_mols = [];
+var mol_counter = 0;
+var mol_index = [];
+var descending_sort = false;
+
 parseSDF = function($fileContent){
-    whole_sdf = $fileContent;
-    var sdf_records = split_sdf(whole_sdf);
-    var mol_tagged_data = sdf_records.tagged_data;
-    var sdf_mols = sdf_records.mol_records;
-    //console.log("Number of molecules " + sdf_mols.length);
-    //console.log("Number of tagged data records " + mol_tagged_data.length);
+    var sdf_records = split_sdf($fileContent);
+    mol_tagged_data = sdf_records.tagged_data;
+    sdf_mols = sdf_records.mol_records;
     //for (i=0; i<all_sdf_tags.length; i++){ console.log(all_sdf_tags[i]); }
-    return [mol_tagged_data, sdf_mols];
-};
-
-firstMolCounter = function(mol_tagged_data, sdf_mols){
-    mol_counter = 0 ;
-    show_molecule(mol_tagged_data, sdf_mols);
-};
-
-incrementMolCounter = function(step_size, mol_tagged_data, sdf_mols){
-    if (mol_counter < sdf_mols.length - step_size){
-        mol_counter += step_size ;
-        show_molecule(mol_tagged_data, sdf_mols);
-    }
-};
-
-decrementMolCounter = function(step_size, mol_tagged_data, sdf_mols){
-    if (mol_counter >= step_size){
-        mol_counter -= step_size;
-        show_molecule(mol_tagged_data, sdf_mols);
-    }
-};
-
-lastMolCounter = function(mol_tagged_data, sdf_mols){
-    mol_counter = sdf_mols.length - 1;
-    show_molecule(mol_tagged_data, sdf_mols);
 };
 
 // expects to get the Number value from the mol_tagged_data record.
-setMolCounter = function(new_val, mol_tagged_data, sdf_mols){
+setMolCounter = function(new_val){
     for (i = 0; i < mol_tagged_data.length; i++){
         if (mol_tagged_data[mol_index[i]].Number == new_val){
             mol_counter = i;
-            show_molecule(mol_tagged_data, sdf_mols);
+            show_molecule();
             return;
         }
     }
@@ -126,30 +104,13 @@ sortColumn = function(column_name, mol_tagged_data, sdf_mols){
     mol_counter = 0;
     for (i = 0; i < sort_pairs.length; i++){
         mol_index.push(sort_pairs[i].index - 1);
-        show_molecule(mol_tagged_data, sdf_mols);
+        show_molecule();
     }
 };
-
-//show_molecule = function(mol_tagged_data, sdf_mols){
-show_molecule = function(mol_tagged_data, sdf_mols){
-    if (2 === mol_tagged_data[mol_index[mol_counter]].Dimension){
-        jsmeApplet.readMolFile(sdf_mols[mol_index[mol_counter]]);
-        //jsmeApplet.clear();
-        //jsmeApplet.repaint();
-    }
-}
 
 // take an SDF and split it into arry of individual MOL records, and array
 // of objects containing tagged data
 split_sdf = function(sdf_contents){
-
-    all_sdf_tags = [];
-    mol_tagged_data = [];
-    sdf_mols = [];
-    mol_counter = 0;
-    mol_index = [];
-    descending_sort = false;
-    
     var mol_records = [];
     var tagged_data = [];
 
@@ -248,8 +209,22 @@ function jsmeOnLoad(){
     jsmeApplet = new JSApplet.JSME('jsme_container', '100%', '100%', {'options': 'hydrogens, depict'});
 }
 
-var tabulate = function(data, columns){
+show_molecule = function(){
+    if (2 === mol_tagged_data[mol_index[mol_counter]].Dimension){
+        jsmeApplet.readMolFile(sdf_mols[mol_index[mol_counter]]);
+        //jsmeApplet.clear();
+        //jsmeApplet.repaint();
+    }
+    tabulate();
+}
+
+var tabulate = function(){
+    var columns = Object.keys(mol_tagged_data[0]);
+    var data = mol_tagged_data.slice(mol_counter, mol_counter+10);
+
     var table = d3.select('#table');
+    d3.select('#table thead').remove();
+    d3.select('#table tbody').remove();
     var thead = table.append('thead');
     var tbody = table.append('tbody');
 
@@ -279,29 +254,50 @@ var tabulate = function(data, columns){
 }
 
 $(document).ready(function(){
-    d3.text('https://raw.githubusercontent.com/taneishi/SDFViewer/master/data/train_rand_data.sdf').then(function(text){
-        var [mol_tagged_data, sdf_mols] = parseSDF(text);
-        //console.log(mol_tagged_data);
-        show_molecule(mol_tagged_data, sdf_mols);
-
-        columns = Object.keys(mol_tagged_data[0]);
-        tabulate(mol_tagged_data.slice(0, 10), columns);
+    var url = 'https://raw.githubusercontent.com/taneishi/SDFViewer/master/data/train_rand_data.sdf'; 
+    d3.text(url).then(function(text){
+        parseSDF(text);
+        show_molecule();
+        //console.log("Number of molecules " + sdf_mols.length);
+        //console.log("Number of tagged data records " + mol_tagged_data.length);
     });
-});
 
-$(document).on('change', '#inputFile', function(){ 
-    var file = $(this).prop('files')[0];
-    if (file){
-        var url = URL.createObjectURL(file);
-        d3.text(url).then(function(text){
-            var [mol_tagged_data, sdf_mols] = parseSDF(text);
-            show_molecule(mol_tagged_data, sdf_mols);
+    $('#inputFile').on('change', function(){ 
+        mol_counter = 0;
+        var file = $(this).prop('files')[0];
+        if (file){
+            var url = URL.createObjectURL(file);
+            d3.text(url).then(function(text){
+                parseSDF(text);
+                show_molecule();
+            });
+        }
+    });
 
-            d3.select('#table thead').remove();
-            d3.select('#table tbody').remove();
-            columns = Object.keys(mol_tagged_data[0]);
-            tabulate(mol_tagged_data.slice(0, 10), columns);
-        });
-    }
+    $('#first').on('click', function(){
+        mol_counter = 0;
+        show_molecule();
+    });
+
+    $('#next').on('click', function(){
+        var step_size = 10;
+        if (mol_counter < sdf_mols.length - step_size){
+            mol_counter += step_size ;
+            show_molecule();
+        }
+    });
+
+    $('#prev').on('click', function(){
+        var step_size = 10;
+        if (mol_counter >= step_size){
+            mol_counter -= step_size;
+            show_molecule();
+        }
+    });
+
+    $('#last').on('click', function(){
+        mol_counter = Math.floor(sdf_mols.length / 10) * 10;
+        show_molecule();
+    });
 });
 
