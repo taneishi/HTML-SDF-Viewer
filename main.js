@@ -297,6 +297,8 @@ $(document).on('change', '#inputFile', function(){
             var [mol_tagged_data, sdf_mols] = parseSDF(text);
             show_molecule(mol_tagged_data, sdf_mols);
 
+            d3.select('#table thead').remove();
+            d3.select('#table tbody').remove();
             columns = Object.keys(mol_tagged_data[0]);
             tabulate(mol_tagged_data.slice(0, 10), columns);
         });
