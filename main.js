@@ -63,7 +63,7 @@ sortColumn = function(column_name, mol_tagged_data, sdf_mols){
     // out as aged -49 on that model.
     var date_formats = [
         moment.ISO_8601,
-        "MM/DD/YYYY  :)  HH*mm*ss"
+        'MM/DD/YYYY  :)  HH*mm*ss'
     ];
     
     for (i = 0; i < mol_tagged_data.length; i++){
@@ -92,7 +92,7 @@ sortColumn = function(column_name, mol_tagged_data, sdf_mols){
         var m2 = new moment(b.data, date_formats, false);
         if (m1.isBefore(m2)){
             return -1;
-        } else if(m1.isSame(m2)){
+        } else if (m1.isSame(m2)){
             return 0;
         } else {
             return 1;
@@ -165,14 +165,14 @@ split_sdf = function(sdf_contents){
     
     for (i = 0; i < sdf_lines.length; i++){
         next_mol.push(sdf_lines[i]);
-        if (sdf_lines[i].trim() == "M  END"){
+        if (sdf_lines[i].trim() == 'M  END'){
             // end of MOL record, so extract some into if available, save it
             // and reset
             var mol_td = {Number: mol_num};
             if (next_mol[0].trim().length > 0){
                 mol_td.Name = next_mol[0].trim();
-                if(-1 == all_sdf_tags.indexOf('Name')){
-                all_sdf_tags.push('Name');
+                if (-1 == all_sdf_tags.indexOf('Name')){
+                    all_sdf_tags.push('Name');
                 }
             }
             // line 2 of the record may have dimension info (2D or 3D).
@@ -189,7 +189,7 @@ split_sdf = function(sdf_contents){
 
             // there may be some tagged data if it's an SDF
             for (; i < sdf_lines.length; i++){
-                if (sdf_lines[i].trim() == "$$$$"){
+                if (sdf_lines[i].trim() == '$$$$'){
                     break;
                 }
                 // the CTFile docs from BioVia say that if a line starts
@@ -245,7 +245,7 @@ split_sdf = function(sdf_contents){
 
 //this function will be called after the JavaScriptApplet code has been loaded.
 function jsmeOnLoad(){
-    jsmeApplet = new JSApplet.JSME("jsme_container", "100%", "100%",{"options": "hydrogens, depict"});
+    jsmeApplet = new JSApplet.JSME('jsme_container', '100%', '100%', {'options': 'hydrogens, depict'});
 }
 
 var tabulate = function(data, columns){
@@ -285,7 +285,7 @@ $(document).ready(function(){
         show_molecule(mol_tagged_data, sdf_mols);
 
         columns = Object.keys(mol_tagged_data[0]);
-        tabulate(mol_tagged_data, columns);
+        tabulate(mol_tagged_data.slice(0, 10), columns);
     });
 });
 
