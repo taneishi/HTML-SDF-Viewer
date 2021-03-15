@@ -289,14 +289,16 @@ $(document).ready(function(){
     });
 });
 
-var inputFile = document.querySelector('#inputFile');
-
-$(inputFile).change(function(){ 
-    var file = inputFile.files[0];
+$(document).on('change', '#inputFile', function(){ 
+    var file = $(this).prop('files')[0];
     if (file){
         var url = URL.createObjectURL(file);
         d3.text(url).then(function(text){
-            parseSDF(text);
+            var [mol_tagged_data, sdf_mols] = parseSDF(text);
+            show_molecule(mol_tagged_data, sdf_mols);
+
+            columns = Object.keys(mol_tagged_data[0]);
+            tabulate(mol_tagged_data.slice(0, 10), columns);
         });
     }
 });
