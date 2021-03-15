@@ -15,7 +15,9 @@ if the relevant flag is set in the SDF (characters 20 and 21 of line 2
 of the MOL record) it will use 3Dmol.js to display the 3D coordinates
 instead.
 
-Usage - open the file hsv.html in a browser and load an SDF using the
+## Usage
+
+Open the file hsv.html in a browser and load an SDF using the
 'Browse' button in the web page.  The table has some interactive
 capabilities, for example the columns can be sorted in ascending and
 descending order and clicking on a row will cause the display of the
@@ -33,12 +35,19 @@ tweaking the width of the browser window. This forces a recalculation
 of the layout and usually fixes things.  It's crude, but seems to
 work. I am trying to find out why this happens in order to fix it.
 
-There are some relevant files in the TestData directory of the
+There are some relevant files in the data directory of the
 download if you want to try it on public data.
 
+## Environment
+
+- jQuery-3.6.0
+- D3.js-v6 
+- Firefox-86.0
+
+## Copyright
+
 Copyright David Cosgrove, CozChemIx Limited, 2017.
-david@cozchemix.co.uk
 
 Copyright Kei Taneishi, 2019-2021.
 
-Licensed under the BSD license - see license.txt for details.
+Licensed under the BSD license - see LICENSE for details.
