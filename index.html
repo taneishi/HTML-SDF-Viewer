@@ -31,18 +31,22 @@
 <script type="text/javascript" language="javascript" src="main.js"></script>
 
 <style>
-#container { margin: 0px 180px; font-family: sans-serif; }
+body { font-family: sans-serif; }
 .jsme { height: 110px; width: 110px; border: 1px solid #000000; }
 #table table, td, th { border-bottom: 1px solid grey; padding: 2px 5px; width: 80px; height: 80px; }
-#footer { text-align: center; padding: 20px; }
+.section { padding: 5px 120px; } 
 </style>
 </head>
   
 <body>
 
-<div id="container">
-    <h2 align="center">Javascript SDF Viewer</h2>
+<div>
+    <div class="section">
+    <h2>Javascript SDF Viewer</h2>
+    Javascript viewer for SDF files with molecular structures. <a href="https://github.com/taneishi/sdfviewer">GitHub repository</a>
+    </div>
 
+    <div class="section">
     Select SDF to display: <input id="inputFile" type="file" accept=".sdf,.mol" />
     <table><tr>
         <td><div id="jsme_container_0" class="jsme"></div></td>
@@ -56,17 +60,17 @@
         <td><div id="jsme_container_8" class="jsme"></div></td>
         <td><div id="jsme_container_9" class="jsme"></div></td>
     </tr></table>
+    </div>
 
-    <div>
+    <div class="section">
         <button id="first">First</button>
         <button id="prev">Previous</button>
         <button id="next">Next</button>
         <button id="last">Last</button>
     </div>
 
-    <div id="table"></div>
+    <div id="table" class="section"></div>
 
-    <div id="footer">Copyright Kei Taneishi, 2014-2021.</div>
 </div>
 
 </body>
