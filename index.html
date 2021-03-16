@@ -32,7 +32,7 @@
 
 <style>
 #container { margin: 0px 180px; font-family: sans-serif; }
-#jsme_container { height: 200px; width: 200px; border: 2px solid #000000; }
+.jsme { height: 110px; width: 110px; border: 1px solid #000000; }
 #table table, td, th { border-bottom: 1px solid grey; padding: 2px 5px; width: 80px; height: 80px; }
 #footer { text-align: center; padding: 20px; }
 </style>
@@ -44,7 +44,18 @@
     <h2 align="center">Javascript SDF Viewer</h2>
 
     Select SDF to display: <input id="inputFile" type="file" accept=".sdf,.mol" />
-    <div id="jsme_container"></div>
+    <table><tr>
+        <td><div id="jsme_container_0" class="jsme"></div></td>
+        <td><div id="jsme_container_1" class="jsme"></div></td>
+        <td><div id="jsme_container_2" class="jsme"></div></td>
+        <td><div id="jsme_container_3" class="jsme"></div></td>
+        <td><div id="jsme_container_4" class="jsme"></div></td>
+        <td><div id="jsme_container_5" class="jsme"></div></td>
+        <td><div id="jsme_container_6" class="jsme"></div></td>
+        <td><div id="jsme_container_7" class="jsme"></div></td>
+        <td><div id="jsme_container_8" class="jsme"></div></td>
+        <td><div id="jsme_container_9" class="jsme"></div></td>
+    </tr></table>
 
     <div>
         <button id="first">First</button>

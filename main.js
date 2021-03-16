@@ -1,6 +1,7 @@
 // part of code for reading local SDFs.
 // Borrowed heavily from https://veamospues.wordpress.com/2014/01/27/reading-files-with-angularjs
 // Named as attribute value by file input tag in html, called by directive named in input tag.
+var jsmeApplet = [];
 var all_sdf_tags = [];
 var mol_tagged_data = [];
 var sdf_mols = [];
@@ -20,7 +21,7 @@ parseSDF = function($fileContent){
 // next, previous buttons on the sorted data.
 sortColumn = function(column_name, mol_tagged_data, sdf_mols){
 
-    sort_pairs = [];
+    var sort_pairs = [];
     var num_nums = 0;
     var num_dates = 0;
 
@@ -94,7 +95,7 @@ sortColumn = function(column_name, mol_tagged_data, sdf_mols){
     mol_counter = 0;
     for (i = 0; i < sort_pairs.length; i++){
         mol_index.push(sort_pairs[i].index - 1);
-        show_molecule();
+        tabulate();
     }
 };
 
@@ -194,21 +195,9 @@ split_sdf = function(sdf_contents){
     return { mol_records: mol_records, tagged_data: tagged_data };
 };
 
-//this function will be called after the JavaScriptApplet code has been loaded.
-function jsmeOnLoad(){
-    jsmeApplet = new JSApplet.JSME('jsme_container', '100%', '100%', {'options': 'hydrogens, depict'});
-}
-
-show_molecule = function(){
-    if (2 === mol_tagged_data[mol_index[mol_counter]].Dimension){
-        jsmeApplet.readMolFile(sdf_mols[mol_index[mol_counter]]);
-        //jsmeApplet.clear();
-        //jsmeApplet.repaint();
-    }
-    tabulate();
-}
-
 var tabulate = function(){
+    show_molecule();
+
     var columns = Object.keys(mol_tagged_data[0]);
     var data = mol_tagged_data.slice(mol_counter, mol_counter+step_size);
 
@@ -220,15 +209,16 @@ var tabulate = function(){
 
     thead.append('tr')
         .selectAll('th')
-            .data(columns)
-            .enter()
+        .data(columns)
+        .enter()
         .append('th')
             .text(function(d){ return d; });
 
     var rows = tbody.selectAll('tr')
         .data(data)
         .enter()
-            .append('tr');
+            .append('tr')
+            .attr('class', (d, i) => 'row_'+i);
 
     var cells = rows.selectAll('td')
         .data(function(row){
@@ -238,16 +228,32 @@ var tabulate = function(){
         })
         .enter()
         .append('td')
-        .text(function(d){ return d.value; });
+        .text(function(d){ return d.value; })
+        .attr('class', (d, i) => 'col_'+i);
 
     return table;
+}
+
+//this function will be called after the JavaScriptApplet code has been loaded.
+function jsmeOnLoad(){
+    //jsmeApplet = new JSApplet.JSME('jsme_container', '100%', '100%', {'options': 'hydrogens, depict'});
+}
+
+show_molecule = function(){
+    if (2 === mol_tagged_data[mol_index[mol_counter]].Dimension){
+        for (i=0; i<step_size; i++){
+            jsmeApplet[i].readMolFile(sdf_mols[mol_index[mol_counter+i]]);
+        }
+        //jsmeApplet.clear();
+        //jsmeApplet.repaint();
+    }
 }
 
 $(document).ready(function(){
     var url = 'https://raw.githubusercontent.com/taneishi/SDFViewer/master/data/train_rand_data.sdf'; 
     d3.text(url).then(function(text){
         parseSDF(text);
-        show_molecule();
+        tabulate();
         //console.log("Number of molecules " + sdf_mols.length);
         //console.log("Number of tagged data records " + mol_tagged_data.length);
     });
@@ -259,33 +265,37 @@ $(document).ready(function(){
             var url = URL.createObjectURL(file);
             d3.text(url).then(function(text){
                 parseSDF(text);
-                show_molecule();
+                tabulate();
             });
         }
     });
 
     $('#first').on('click', function(){
         mol_counter = 0;
-        show_molecule();
+        tabulate();
     });
 
     $('#next').on('click', function(){
         if (mol_counter < sdf_mols.length - step_size){
-            mol_counter += step_size ;
-            show_molecule();
+            mol_counter += step_size;
+            tabulate();
         }
     });
 
     $('#prev').on('click', function(){
         if (mol_counter >= step_size){
             mol_counter -= step_size;
-            show_molecule();
+            tabulate();
         }
     });
 
     $('#last').on('click', function(){
-        mol_counter = Math.floor(sdf_mols.length / step_size) * step_size;
-        show_molecule();
+        mol_counter = Math.floor((sdf_mols.length - 1) / step_size) * step_size;
+        tabulate();
     });
+
+    for (i=0; i<step_size; i++){
+        jsmeApplet[i] = new JSApplet.JSME('jsme_container_'+i, '100%', '100%', {'options': 'hydrogens, depict'});
+    }
 });
 
