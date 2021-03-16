@@ -5,8 +5,6 @@ var all_sdf_tags = [];
 var mol_tagged_data = [];
 var sdf_mols = [];
 var mol_counter = 0;
-var mol_index = [];
-var descending_sort = false;
 var step_size = 10;
 var jsmeApplet = Array(step_size);
 
@@ -14,89 +12,6 @@ parseSDF = function($fileContent){
     var sdf_records = split_sdf($fileContent);
     mol_tagged_data = sdf_records.tagged_data;
     sdf_mols = sdf_records.mol_records;
-    //for (i=0; i<all_sdf_tags.length; i++){ console.log(all_sdf_tags[i]); }
-};
-
-// sort the mol data according to the given value, maintaining the sense of the
-// next, previous buttons on the sorted data.
-sortColumn = function(column_name, mol_tagged_data, sdf_mols){
-
-    var sort_pairs = [];
-    var num_nums = 0;
-    var num_dates = 0;
-
-    // using moment.js (momentjs.com) for date parsing. Note that in this
-    // library, 2 digit years are parsed as 19xx if xx > 68, 20xx if x <= 68.
-    // The test files in this download reveal that this is not necessarily a
-    // splendid cutoff, but I suppose they have to put it somewhere. I come
-    // out as aged -49 on that model.
-    var date_formats = [
-        moment.ISO_8601,
-        'MM/DD/YYYY  :)  HH*mm*ss'
-    ];
-    
-    for (i = 0; i < mol_tagged_data.length; i++){
-        sort_pairs.push({index: mol_tagged_data[i].Number,
-                 data: mol_tagged_data[i][column_name]});
-        // assess type for the data which will be in strings
-        // because they've come from an SDF.  This gives inadequate sorting
-        // results. Try and convert to floats, if that doesn't work try dates,
-        // and if that doesn't work use strings.
-        // The plus forces conversion to a number, leaving a NaN if it can't
-        // be done.  It's more reliable, according to a man on the Interweb,
-        // than parseInt and parseFloat which will give numbers for 44.png,
-        // for example.
-        if (!isNaN(+mol_tagged_data[i][column_name])){
-            num_nums++;
-        } else {
-            // console.log(mol_tagged_data[i][column_name]);
-            if (moment(mol_tagged_data[i][column_name], date_formats, false).isValid()){
-                num_dates++;
-            }
-        }
-    }
-
-    var sort_dates = function(a, b){
-        var m1 = new moment(a.data, date_formats, false);
-        var m2 = new moment(b.data, date_formats, false);
-        if (m1.isBefore(m2)){
-            return -1;
-        } else if (m1.isSame(m2)){
-            return 0;
-        } else {
-            return 1;
-        }
-    };
-
-    var sort_strings = function(a, b){
-        if (a.data < b.data){
-            return -1;
-        } else if (a.data == b.data){
-            return 0;
-        } else {
-            return 1;
-        }
-    };
-    
-    if (num_nums == mol_tagged_data.length){
-        sort_pairs.sort(function(a,b){ return +a.data - +b.data; });
-    } else if (num_dates == mol_tagged_data.length){
-        sort_pairs.sort(sort_dates);
-    } else {
-        sort_pairs.sort(sort_strings);
-    }
-    if (descending_sort){
-        sort_pairs.reverse();
-    }
-    descending_sort = !descending_sort;
-    
-    // console.log(JSON.stringify(sort_pairs));
-    mol_index = [];
-    mol_counter = 0;
-    for (i = 0; i < sort_pairs.length; i++){
-        mol_index.push(sort_pairs[i].index - 1);
-        tabulate();
-    }
 };
 
 // take an SDF and split it into arry of individual MOL records, and array
@@ -135,7 +50,6 @@ split_sdf = function(sdf_contents){
                 mol_td.Dimension = 2;
             }
             mol_records.push(next_mol.join('\n'));
-            mol_index.push(mol_num - 1);
             next_mol = [];
             mol_num++;
 
@@ -191,13 +105,15 @@ split_sdf = function(sdf_contents){
             tagged_data.push(mol_td);
         }
     }
+    //for (i=0; i<all_sdf_tags.length; i++){ console.log(all_sdf_tags[i]); }
 
     return { mol_records: mol_records, tagged_data: tagged_data };
 };
 
-var tabulate = function(){
-    show_molecule();
+//this function will be called after the JavaScriptApplet code has been loaded.
+function jsmeOnLoad(){ /* do nothing */ }
 
+var tabulate = function(){
     var columns = Object.keys(mol_tagged_data[0]);
     var data = mol_tagged_data.slice(mol_counter, mol_counter+step_size);
 
@@ -217,8 +133,7 @@ var tabulate = function(){
     var rows = tbody.selectAll('tr')
         .data(data)
         .enter()
-            .append('tr')
-            .attr('class', (d, i) => 'row_'+i);
+            .append('tr');
 
     var cells = rows.selectAll('td')
         .data(function(row){
@@ -231,18 +146,9 @@ var tabulate = function(){
         .text(function(d){ return d.value; })
         .attr('class', (d, i) => 'col_'+i);
 
-    return table;
-}
-
-//this function will be called after the JavaScriptApplet code has been loaded.
-function jsmeOnLoad(){
-    //jsmeApplet = new JSApplet.JSME('jsme_container', '100%', '100%', {'options': 'hydrogens, depict'});
-}
-
-show_molecule = function(){
-    if (2 === mol_tagged_data[mol_index[mol_counter]].Dimension){
+    if (2 === mol_tagged_data[mol_counter].Dimension){
         for (i=0; i<step_size; i++){
-            jsmeApplet[i].readMolFile(sdf_mols[mol_index[mol_counter+i]]);
+            jsmeApplet[i].readMolFile(sdf_mols[mol_counter+i]);
         }
         //jsmeApplet.clear();
         //jsmeApplet.repaint();
