@@ -146,8 +146,17 @@ var tabulate = function(){
         .text(function(d){ return d.value; })
         .attr('class', (d, i) => 'col_'+i);
 
+    thead.selectAll('tr').append('th').text('Struture');
+    rows.append('td')
+        .attr('class', 'jsme')
+        .attr('id', (d, i) => 'jsme_container_'+i);
+
+    for (i=0; i<step_size && i<data.length; i++){
+        jsmeApplet[i] = new JSApplet.JSME('jsme_container_'+i, '100%', '100%', {'options': 'hydrogens, depict'});
+    }
+
     if (2 === mol_tagged_data[mol_counter].Dimension){
-        for (i=0; i<step_size; i++){
+        for (i=0; i<step_size && i<data.length; i++){
             jsmeApplet[i].readMolFile(sdf_mols[mol_counter+i]);
         }
         //jsmeApplet.clear();
@@ -200,17 +209,5 @@ $(document).ready(function(){
         tabulate();
     });
 
-    var table = d3.select('#structure');
-    table.append('tr')
-        .selectAll('td')
-        .data(jsmeApplet)
-        .enter()
-        .append('td')
-            .attr('id', (d, i) => 'jsme_container_' + i)
-            .attr('class', 'jsme');
-
-    for (i=0; i<step_size; i++){
-        jsmeApplet[i] = new JSApplet.JSME('jsme_container_'+i, '100%', '100%', {'options': 'hydrogens, depict'});
-    }
 });
 
