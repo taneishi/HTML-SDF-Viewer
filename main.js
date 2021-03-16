@@ -1,7 +1,6 @@
 // part of code for reading local SDFs.
 // Borrowed heavily from https://veamospues.wordpress.com/2014/01/27/reading-files-with-angularjs
 // Named as attribute value by file input tag in html, called by directive named in input tag.
-var jsmeApplet = [];
 var all_sdf_tags = [];
 var mol_tagged_data = [];
 var sdf_mols = [];
@@ -9,6 +8,7 @@ var mol_counter = 0;
 var mol_index = [];
 var descending_sort = false;
 var step_size = 10;
+var jsmeApplet = Array(step_size);
 
 parseSDF = function($fileContent){
     var sdf_records = split_sdf($fileContent);
@@ -293,6 +293,15 @@ $(document).ready(function(){
         mol_counter = Math.floor((sdf_mols.length - 1) / step_size) * step_size;
         tabulate();
     });
+
+    var table = d3.select('#structure');
+    table.append('tr')
+        .selectAll('td')
+        .data(jsmeApplet)
+        .enter()
+        .append('td')
+            .attr('id', (d, i) => 'jsme_container_' + i)
+            .attr('class', 'jsme');
 
     for (i=0; i<step_size; i++){
         jsmeApplet[i] = new JSApplet.JSME('jsme_container_'+i, '100%', '100%', {'options': 'hydrogens, depict'});

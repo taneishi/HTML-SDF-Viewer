@@ -33,8 +33,8 @@
 <style>
 body { font-family: sans-serif; }
 .jsme { height: 110px; width: 110px; border: 1px solid #000000; }
-#table table, td, th { border-bottom: 1px solid grey; padding: 2px 5px; width: 80px; height: 80px; }
 .section { padding: 5px 120px; } 
+#table table, td, th { border-bottom: 1px solid grey; padding: 2px 5px; width: 80px; height: 80px; }
 </style>
 </head>
   
@@ -48,18 +48,7 @@ body { font-family: sans-serif; }
 
     <div class="section">
     Select SDF to display: <input id="inputFile" type="file" accept=".sdf,.mol" />
-    <table><tr>
-        <td><div id="jsme_container_0" class="jsme"></div></td>
-        <td><div id="jsme_container_1" class="jsme"></div></td>
-        <td><div id="jsme_container_2" class="jsme"></div></td>
-        <td><div id="jsme_container_3" class="jsme"></div></td>
-        <td><div id="jsme_container_4" class="jsme"></div></td>
-        <td><div id="jsme_container_5" class="jsme"></div></td>
-        <td><div id="jsme_container_6" class="jsme"></div></td>
-        <td><div id="jsme_container_7" class="jsme"></div></td>
-        <td><div id="jsme_container_8" class="jsme"></div></td>
-        <td><div id="jsme_container_9" class="jsme"></div></td>
-    </tr></table>
+    <table id="structure"></table>
     </div>
 
     <div class="section">
