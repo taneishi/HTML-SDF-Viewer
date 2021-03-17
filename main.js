@@ -6,7 +6,6 @@ var mol_tagged_data = [];
 var sdf_mols = [];
 var mol_counter = 0;
 var step_size = 10;
-var jsmeApplet = Array(step_size);
 
 parseSDF = function($fileContent){
     var sdf_records = split_sdf($fileContent);
@@ -110,9 +109,6 @@ split_sdf = function(sdf_contents){
     return { mol_records: mol_records, tagged_data: tagged_data };
 };
 
-//this function will be called after the JavaScriptApplet code has been loaded.
-function jsmeOnLoad(){ /* do nothing */ }
-
 var tabulate = function(){
     var columns = Object.keys(mol_tagged_data[0]);
     var data = mol_tagged_data.slice(mol_counter, mol_counter+step_size);
@@ -148,19 +144,16 @@ var tabulate = function(){
 
     thead.selectAll('tr').append('th').text('Struture');
     rows.append('td')
-        .attr('class', 'jsme')
-        .attr('id', (d, i) => 'jsme_container_'+i);
-
-    for (i=0; i<step_size && i<data.length; i++){
-        jsmeApplet[i] = new JSApplet.JSME('jsme_container_'+i, '100%', '100%', {'options': 'hydrogens, depict'});
-    }
+        .append('canvas')
+        .attr('id', (d, i) => 'viewer_'+i);
 
     if (2 === mol_tagged_data[mol_counter].Dimension){
         for (i=0; i<step_size && i<data.length; i++){
-            jsmeApplet[i].readMolFile(sdf_mols[mol_counter+i]);
+            var mol = ChemDoodle.readMOL(sdf_mols[mol_counter+i]);
+            var viewer = new ChemDoodle.ViewerCanvas('viewer_'+i, 110, 110);
+            viewer.styles.atoms_useJMOLColors = true;
+            viewer.loadMolecule(mol);
         }
-        //jsmeApplet.clear();
-        //jsmeApplet.repaint();
     }
 }
 
