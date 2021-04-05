@@ -157,7 +157,8 @@ var tabulate = function(){
     }
 }
 
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', (event) => {
+//$(document).ready(function(){
     var url = 'https://raw.githubusercontent.com/taneishi/SDFViewer/master/data/train_rand_data.sdf'; 
     d3.text(url).then(function(text){
         parseSDF(text);
@@ -166,9 +167,9 @@ $(document).ready(function(){
         //console.log("Number of tagged data records " + mol_tagged_data.length);
     });
 
-    $('#inputFile').on('change', function(){ 
+    document.getElementById('inputFile').addEventListener('change', function(){ 
         mol_counter = 0;
-        var file = $(this).prop('files')[0];
+        var file = this.files[0];
         if (file){
             var url = URL.createObjectURL(file);
             d3.text(url).then(function(text){
@@ -178,29 +179,28 @@ $(document).ready(function(){
         }
     });
 
-    $('#first').on('click', function(){
+    document.getElementById('first').addEventListener('click', function(){
         mol_counter = 0;
         tabulate();
     });
 
-    $('#next').on('click', function(){
+    document.getElementById('next').addEventListener('click', function(){
         if (mol_counter < sdf_mols.length - step_size){
             mol_counter += step_size;
             tabulate();
         }
     });
 
-    $('#prev').on('click', function(){
+    document.getElementById('prev').addEventListener('click', function(){
         if (mol_counter >= step_size){
             mol_counter -= step_size;
             tabulate();
         }
     });
 
-    $('#last').on('click', function(){
+    document.getElementById('last').addEventListener('click', function(){
         mol_counter = Math.floor((sdf_mols.length - 1) / step_size) * step_size;
         tabulate();
     });
 
 });
-
