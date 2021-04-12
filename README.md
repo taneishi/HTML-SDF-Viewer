@@ -30,9 +30,9 @@ There are some relevant files in the data directory of the download if you want 
 
 ## Environment
 
-- jQuery-3.6.0 - MIT
-- D3.js-v6 - BSD 3-Clause
-- ChemDoodleWeb-9.2.0 - GPLv3
+- jQuery-3.6.0: MIT
+- D3.js-v6: BSD 3-Clause
+- ChemDoodleWeb-9.2.0: GPLv3
 - Firefox-86.0
 
 ## Copyright
