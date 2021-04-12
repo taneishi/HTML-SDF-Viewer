@@ -30,14 +30,15 @@ There are some relevant files in the data directory of the download if you want 
 
 ## Environment
 
-- jQuery-3.6.0
-- D3.js-v6 
-- ChemDoodleWeb-9.2.0
+- jQuery-3.6.0 - MIT
+- D3.js-v6 - BSD 3-Clause
+- ChemDoodleWeb-9.2.0 - GPLv3
 - Firefox-86.0
 
 ## Copyright
 
 Copyright David Cosgrove, CozChemIx Limited, 2017.
+
 Copyright Kei Taneishi, 2019-2021.
 
 Licensed under the BSD license - see LICENSE for details.
